@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace EmployeesConsoleCommand
 {
-    internal interface IDataController
+    enum EmployeeFieldsEnum
     {
-        public List<Employee> GetData();
-        public void PushData(List<Employee> employees);
+        FirstName,
+        LastName,
+        PhoneNumber,
+        Description
     }
 }

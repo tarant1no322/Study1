@@ -4,18 +4,18 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmployeesConsoleCommand.DataController;
 
 namespace EmployeesConsoleCommand.ConsoleCommands
 {
     internal class AddEmpCommand : IConsoleCommand
     {
         private IConsoleCommand _prevCommand;
-        private List<Employee> _employees;
-        private IDataController _dataController = new JsonController();
+        private IDataController _dataController = new SQLiteController();
+        //private IDataController _dataController = new JsonController();
         public AddEmpCommand(IConsoleCommand prevCommand)
         {
             _prevCommand = prevCommand;
-            _employees = _dataController.GetData();
         }
         public IConsoleCommand Execute(ConsoleKey key)
         {
@@ -34,11 +34,8 @@ namespace EmployeesConsoleCommand.ConsoleCommands
             string? Description = Print.InputString("Введите описание нового сотрудника: ");
             if (IsAddCancel(Description)) return;
             var tempEmp = new Employee(FirstName!, LastName!, PhoneNumber!, Description!);
-            if (_employees == null || _employees.Count == 0)
-                _employees = new List<Employee>() { tempEmp };
-            else
-                _employees.Add(tempEmp);
-            _dataController.PushData(_employees);
+
+            _dataController.Add(tempEmp);
             Console.WriteLine("\nСотрудник добавлен в базу!\nНажмите любую кнопку для возврата в меню...");
         }
         public IConsoleCommand PrevCommand() => _prevCommand;

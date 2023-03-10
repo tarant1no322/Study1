@@ -1,4 +1,5 @@
 ﻿using EmployeesConsoleCommand.ConsoleCommands;
+using EmployeesConsoleCommand.DataController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace EmployeesConsoleCommand
         private Dictionary<ConsoleKey, Guid> _result = new();
         private List<Employee> _employees = new();
         private List<string> _pointsMenu = new();
-        private IDataController _dataController = new JsonController();
+        private IDataController _dataController = new SQLiteController();
         private static int _currentPage = 1, _countPages;
         private bool _isListEmpty;
 
@@ -50,7 +51,7 @@ namespace EmployeesConsoleCommand
                 startInt = _currentPage * 9 - 9;
             for (int i = startInt, j = 0; i < _employees.Count && j < 9; i++, j++)
             {
-                _result.Add((ConsoleKey)j + 49, _employees[i].Guid);
+                _result.Add((ConsoleKey)j + 49, _employees[i].Id);
                 _pointsMenu.Add($"{_employees[i].LastName} {_employees[i].FirstName}");
             }
         }

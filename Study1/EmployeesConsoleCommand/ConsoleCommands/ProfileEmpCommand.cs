@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmployeesConsoleCommand.DataController;
 
 namespace EmployeesConsoleCommand.ConsoleCommands
 {
-    internal class ViewProfileEmpCommand : IConsoleCommand
+    internal class ProfileEmpCommand : IConsoleCommand
     {
         private Dictionary<ConsoleKey, IConsoleCommand> _supportNextCommand;
         private readonly IConsoleCommand _prevCommand;
-        private readonly IDataController _dataController = new JsonController();
+        private readonly IDataController _dataController = new SQLiteController();
         private Guid _guid;
         private readonly List<Employee> _employees;
-        public ViewProfileEmpCommand(IConsoleCommand prevCommand, Guid guid)
+        public ProfileEmpCommand(IConsoleCommand prevCommand, Guid guid)
         {
             _prevCommand = prevCommand;
             _guid = guid;
@@ -21,12 +22,25 @@ namespace EmployeesConsoleCommand.ConsoleCommands
             
             _supportNextCommand = new Dictionary<ConsoleKey, IConsoleCommand>()
             {
-                { ConsoleKey.D1, new EditEmpCommand(prevCommand, _guid, DataEmployee.FirstName) }, 
-                { ConsoleKey.D2, new EditEmpCommand(prevCommand, _guid, DataEmployee.LastName) }, 
-                { ConsoleKey.D3, new EditEmpCommand(prevCommand, _guid, DataEmployee.PhoneNumber) }, 
-                { ConsoleKey.D4, new EditEmpCommand(prevCommand, _guid, DataEmployee.Description) }
+                { ConsoleKey.D1, new EditEmpCommand(prevCommand, _guid, EmployeeFieldsEnum.FirstName) }, 
+                { ConsoleKey.D2, new EditEmpCommand(prevCommand, _guid, EmployeeFieldsEnum.LastName) }, 
+                { ConsoleKey.D3, new EditEmpCommand(prevCommand, _guid, EmployeeFieldsEnum.PhoneNumber) }, 
+                { ConsoleKey.D4, new EditEmpCommand(prevCommand, _guid, EmployeeFieldsEnum.Description) }
             };
+        }
+        public void Functionality()
+        {
+            Employee currentEmployee = _employees.Find(x => x.Id == _guid)!;
+            Print.PrintLogo("EmployeeProfile");
+            Console.WriteLine(
+            @$"
+[1] Имя: {currentEmployee.FirstName}
+[2] Фамилия: {currentEmployee.LastName}
+[3] Телефон: {currentEmployee.PhoneNumber}
+[4] Описание: {currentEmployee.Description}
 
+Для редактирования данных нажмите соответствующую клавишу...
+");
         }
         public IConsoleCommand Execute(ConsoleKey key)
         {
@@ -39,19 +53,5 @@ namespace EmployeesConsoleCommand.ConsoleCommands
 
         public IConsoleCommand PrevCommand() => _prevCommand;
 
-        public void Functionality()
-        {
-            Employee currentEmployee = _employees.Find(x => x.Guid == _guid)!;
-            Print.PrintLogo("EmployeeProfile");
-            Console.WriteLine(
-            @$"
-[1] Имя: {currentEmployee.FirstName}
-[2] Фамилия: {currentEmployee.LastName}
-[3] Телефон: {currentEmployee.PhoneNumber}
-[4] Описание: {currentEmployee.Description}
-
-Для редактирования данных нажмите соответствующую клавишу...
-");
-        }
     }
 }

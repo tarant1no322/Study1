@@ -10,7 +10,7 @@ namespace EmployeesConsoleCommand
 {
     class Employee : IComparable<Employee>
     {
-        public Guid Guid { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
@@ -21,7 +21,7 @@ namespace EmployeesConsoleCommand
             LastName = lastName;
             PhoneNumber = phoneNumber;
             Description = description;
-            Guid = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public int CompareTo(Employee? other)

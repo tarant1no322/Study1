@@ -1,23 +1,21 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmployeesConsoleCommand.DataController;
 
 namespace EmployeesConsoleCommand.ConsoleCommands
 {
-    /// <summary>
-    /// класс должен вызывать GetList после чего вызывать класс просмотра пользователя,
-    ///     передавая в качестве параметра Guid Employee.
-    ///     
-    /// </summary>
-    internal class ViewAllEmpCommand : IConsoleCommand
+    internal class RemoveEmpCommand : IConsoleCommand
     {
 
         private readonly IConsoleCommand _prevCommand;
         private GenerateList _list;
+        private IDataController _dataController = new SQLiteController();
 
-        public ViewAllEmpCommand(IConsoleCommand prevCommand)
+        public RemoveEmpCommand(IConsoleCommand prevCommand)
         {
             _prevCommand = prevCommand;
             _list = new GenerateList();
@@ -25,30 +23,28 @@ namespace EmployeesConsoleCommand.ConsoleCommands
 
         public void Functionality()
         {
-            _list = new GenerateList();
-            Print.PrintLogo("ViewEmployees");
+            Print.PrintLogo("DeleteEmployee");
             if (_list.IsListEmpty())
             {
                 Console.WriteLine("\nСотрудников в базе нет!");
                 return;
             }
-            Console.WriteLine("\tВыберите сотрудника для просмотра детальной информации: \n");
+            Console.WriteLine("\tВыберите сотрудника для удаления: \n"); 
             _list.PrintList();
-
         }
         public IConsoleCommand Execute(ConsoleKey key)
         {
-
             if (!_list.GetList().TryGetValue(key, out Guid guid))
             {
-                if(key == ConsoleKey.DownArrow)
+                if (key == ConsoleKey.DownArrow)
                     _list.PageDoun();
-                else if(key == ConsoleKey.UpArrow)
+                if (key == ConsoleKey.UpArrow)
                     _list.PageUp();
                 _list = new GenerateList();
                 return this;
             }
-            return new ViewProfileEmpCommand(this, guid);
+            _dataController.Remove(guid);
+            return new MainMenuCommand();
         }
         public IConsoleCommand PrevCommand() => _prevCommand;
     }

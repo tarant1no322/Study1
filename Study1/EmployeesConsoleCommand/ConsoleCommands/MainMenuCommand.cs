@@ -15,7 +15,7 @@ namespace EmployeesConsoleCommand.ConsoleCommands
             {
                 { ConsoleKey.D1, new ViewAllEmpCommand(this) },
                 { ConsoleKey.D2, new AddEmpCommand(this) },
-                { ConsoleKey.D3, new DeleteEmpCommand(this) }
+                { ConsoleKey.D3, new RemoveEmpCommand(this) }
             };
         }
         public void Functionality()
